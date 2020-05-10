@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/listFragment">
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.nshumskii.lab1.view.ListFragment"
+        android:label="fragment_list"
+        tools:layout="@layout/list_fragment">
+        <action
+            android:id="@+id/action_listFragment_to_contactFragment"
+            app:destination="@id/contactFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_emptyFragment"
+            app:destination="@id/emptyFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_editFragment"
+            app:destination="@id/editFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contactFragment"
+        android:name="com.nshumskii.lab1.view.ContactFragment"
+        android:label="fragment_contact"
+        tools:layout="@layout/contact_fragment">
+        <argument
+            android:name="personId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_contactFragment_to_editFragment"
+            app:destination="@id/editFragment" />
+        <action
+            android:id="@+id/action_contactFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.nshumskii.lab1.view.EditFragment"
+        android:label="fragment_edit"
+        tools:layout="@layout/edit_fragment">
+        <action
+            android:id="@+id/action_editFragment_to_contactFragment"
+            app:destination="@id/contactFragment" />
+        <argument
+            android:name="personId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/emptyFragment"
+        android:name="com.nshumskii.lab1.view.EmptyFragment"
+        android:label="fragment_empty"
+        tools:layout="@layout/empty_fragment">
+        <action
+            android:id="@+id/action_emptyFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/action_emptyFragment_to_editFragment"
+            app:destination="@id/editFragment"
+            app:popUpTo="@id/listFragment" />
+    </fragment>
+
+</navigation>
