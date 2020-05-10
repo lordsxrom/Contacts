@@ -2,7 +2,7 @@ package com.nshumskii.lab1.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.nshumskii.lab1.model.Person
+import com.nshumskii.lab1.models.Person
 
 @Entity(tableName = "persons_table")
 data class PersonData(

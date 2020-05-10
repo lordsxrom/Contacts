@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.nshumskii.lab1.view.ListFragment"
+        android:name="com.nshumskii.lab1.views.ListFragment"
         android:label="fragment_list"
         tools:layout="@layout/list_fragment">
         <action
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/contactFragment"
-        android:name="com.nshumskii.lab1.view.ContactFragment"
+        android:name="com.nshumskii.lab1.views.ContactFragment"
         android:label="fragment_contact"
         tools:layout="@layout/contact_fragment">
         <argument
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/editFragment"
-        android:name="com.nshumskii.lab1.view.EditFragment"
+        android:name="com.nshumskii.lab1.views.EditFragment"
         android:label="fragment_edit"
         tools:layout="@layout/edit_fragment">
         <action
@@ -53,7 +53,7 @@
 
     <fragment
         android:id="@+id/emptyFragment"
-        android:name="com.nshumskii.lab1.view.EmptyFragment"
+        android:name="com.nshumskii.lab1.views.EmptyFragment"
         android:label="fragment_empty"
         tools:layout="@layout/empty_fragment">
         <action
@@ -61,8 +61,7 @@
             app:destination="@id/listFragment" />
         <action
             android:id="@+id/action_emptyFragment_to_editFragment"
-            app:destination="@id/editFragment"
-            app:popUpTo="@id/listFragment" />
+            app:destination="@id/editFragment" />
     </fragment>
 
 </navigation>

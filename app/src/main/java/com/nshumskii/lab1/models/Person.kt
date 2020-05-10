@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.model
+package com.nshumskii.lab1.models
 
 import java.io.Serializable
 

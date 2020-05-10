@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.view
+package com.nshumskii.lab1.views
 
 import android.Manifest
 import android.content.Intent
@@ -9,7 +9,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.EditText
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -20,9 +19,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nshumskii.lab1.R
-import com.nshumskii.lab1.adapter.PersonsAdapter
+import com.nshumskii.lab1.adapters.PersonsAdapter
 import com.nshumskii.lab1.data.PersonData
-import com.nshumskii.lab1.viewmodel.ListViewModel
+import com.nshumskii.lab1.viewmodels.ListViewModel
 import kotlinx.android.synthetic.main.list_fragment.*
 
 

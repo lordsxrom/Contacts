@@ -1,6 +1,6 @@
 package com.nshumskii.lab1.data
 
-import com.nshumskii.lab1.model.Person
+import com.nshumskii.lab1.models.Person
 
 class PersonRepository(private val personDataDao: PersonDataDao) {
 

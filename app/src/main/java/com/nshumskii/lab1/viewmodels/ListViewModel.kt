@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.viewmodel
+package com.nshumskii.lab1.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -8,7 +8,7 @@ import com.nshumskii.lab1.R
 import com.nshumskii.lab1.data.AppDatabase
 import com.nshumskii.lab1.data.PersonData
 import com.nshumskii.lab1.data.PersonRepository
-import com.nshumskii.lab1.model.Event
+import com.nshumskii.lab1.models.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 
 class ListViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var personInteractor =
+    private var personRepository =
         PersonRepository(AppDatabase.getInstance(application).personDataDao())
 
     var persons: MutableLiveData<List<PersonData>> = MutableLiveData()
@@ -37,7 +37,7 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
-        personInteractor.getContacts().observeForever(personsObserver)
+        personRepository.getContacts().observeForever(personsObserver)
     }
 
     fun search(target: String) {
@@ -53,19 +53,12 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
 
     fun sort() {
         CoroutineScope(IO).launch {
-            val sort =
-                personsList?.sortedWith(compareBy(PersonData::lastname))
-            withContext(Main) {
-                persons.value = sort
-            }
+            val sort = personsList?.sortedWith(compareBy(PersonData::lastname))
+            withContext(Main) { persons.value = sort }
         }
     }
 
-    fun deleteAll() {
-        CoroutineScope(IO).launch {
-            personInteractor.deleteAll()
-        }
-    }
+    fun deleteAll() = CoroutineScope(IO).launch { personRepository.deleteAll() }
 
     fun insertNew() {
         navEvent.value = Event(R.id.action_listFragment_to_editFragment)
@@ -73,7 +66,7 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
-        personInteractor.getContacts().removeObserver(personsObserver)
+        personRepository.getContacts().removeObserver(personsObserver)
     }
 
 }

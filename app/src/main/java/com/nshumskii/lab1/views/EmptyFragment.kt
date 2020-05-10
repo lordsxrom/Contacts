@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.view
+package com.nshumskii.lab1.views
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import com.nshumskii.lab1.R
-import com.nshumskii.lab1.viewmodel.EmptyViewModel
+import com.nshumskii.lab1.viewmodels.EmptyViewModel
 import kotlinx.android.synthetic.main.empty_fragment.*
 
 class EmptyFragment : Fragment() {

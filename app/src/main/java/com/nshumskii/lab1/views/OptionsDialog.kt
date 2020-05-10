@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.view
+package com.nshumskii.lab1.views
 
 import android.Manifest
 import android.content.Intent
@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.DialogFragment
 import com.nshumskii.lab1.R
 import com.nshumskii.lab1.data.PersonData
-import com.nshumskii.lab1.model.Person
 
 class OptionsDialog() : DialogFragment() {
 

@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.adapter
+package com.nshumskii.lab1.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.nshumskii.lab1.R
 import com.nshumskii.lab1.data.PersonData
-import com.nshumskii.lab1.view.ListFragment
+import com.nshumskii.lab1.views.ListFragment
 
 class PersonsAdapter(var data: List<PersonData>, var callback: ListFragment.OnItemClickListener) :
     RecyclerView.Adapter<PersonsAdapter.PersonViewHolder>() {

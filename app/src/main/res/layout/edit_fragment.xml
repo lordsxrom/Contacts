@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    tools:context=".view.EditFragment">
+    android:padding="10dp"
+    tools:context=".views.EditFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tvl_edit_firstname"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:helperText="Ivan">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ied_edit_firstname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="First name"
+            android:inputType="textPersonName" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -23,12 +27,15 @@
         android:id="@+id/tvl_edit_lastname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        app:helperText="Ivanov">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ied_edit_email"
+            android:id="@+id/ied_edit_lastname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Last name"
+            android:inputType="textPersonName"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -37,12 +44,15 @@
         android:id="@+id/tvl_edit_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        app:helperText="(000) 000-00-00">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ied_edit_phone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Phone"
+            android:inputType="phone"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,11 +60,14 @@
         android:id="@+id/tvl_edit_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        app:helperText="email@domain.com">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ied_edit_lastname"
+            android:id="@+id/ied_edit_email"
             android:layout_width="match_parent"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 

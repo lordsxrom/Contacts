@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.view
+package com.nshumskii.lab1.views
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -11,13 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 
 import com.nshumskii.lab1.R
-import com.nshumskii.lab1.model.Person
-import com.nshumskii.lab1.viewmodel.ContactViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.nshumskii.lab1.viewmodels.ContactViewModel
 
 class ContactFragment : Fragment() {
 
@@ -55,16 +49,15 @@ class ContactFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(ContactViewModel::class.java)
 
         val personId: Long? = arguments?.get("personId") as? Long
-        personId?.let { viewModel.getPersonById(it) }
+        personId?.let { viewModel.fetchPerson(it) }
 
         viewModel.person.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                fullnameView.text = "${it.firstname} ${it.lastname}"
-                firstnameView.text = it.firstname
-                lastnameView.text = it.lastname
-                phoneView.text = it.phone
-                emailView.text = it.email
-            }
+            it ?: return@Observer
+            fullnameView.text = "${it.firstname} ${it.lastname}"
+            firstnameView.text = it.firstname
+            lastnameView.text = it.lastname
+            phoneView.text = it.phone
+            emailView.text = it.email
         })
 
         viewModel.navEvent.observe(viewLifecycleOwner, Observer {

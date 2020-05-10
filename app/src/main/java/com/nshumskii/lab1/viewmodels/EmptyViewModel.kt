@@ -1,4 +1,4 @@
-package com.nshumskii.lab1.viewmodel
+package com.nshumskii.lab1.viewmodels
 
 import android.app.Activity
 import android.app.Application
@@ -11,18 +11,17 @@ import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.nshumskii.lab1.data.AppDatabase
 import com.nshumskii.lab1.data.PersonRepository
-import com.nshumskii.lab1.model.Event
-import com.nshumskii.lab1.model.Person
+import com.nshumskii.lab1.models.Event
+import com.nshumskii.lab1.models.Person
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.IOException
 
 class EmptyViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var personInteractor =
+    private var personRepository =
         PersonRepository(AppDatabase.getInstance(application).personDataDao())
 
     var fileEvent: MutableLiveData<Event<String>> = MutableLiveData()
@@ -48,7 +47,7 @@ class EmptyViewModel(application: Application) : AndroidViewModel(application) {
                                     val persons: List<Person> =
                                         GsonBuilder().create().fromJson(jsonReader, personsType)
 
-                                    personInteractor.insertAll(persons = persons)
+                                    personRepository.insertAll(persons = persons)
                                     withContext(Main) { fileEvent.value = Event(ACTION_FINISH_IMPORT_FILE) }
                                 }
                             }

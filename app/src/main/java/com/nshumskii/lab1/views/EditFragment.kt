@@ -1,17 +1,15 @@
-package com.nshumskii.lab1.view
+package com.nshumskii.lab1.views
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.EditText
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import com.nshumskii.lab1.viewmodel.EditViewModel
+import androidx.navigation.fragment.NavHostFragment
+import com.nshumskii.lab1.viewmodels.EditViewModel
 import com.nshumskii.lab1.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class EditFragment : Fragment() {
@@ -49,17 +47,22 @@ class EditFragment : Fragment() {
         personId?.let { viewModel.getPersonById(it) }
 
         viewModel.person.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                firstnameField.setText(it.firstname)
-                lastnameField.setText(it.lastname)
-                phoneField.setText(it.phone)
-                emailField.setText(it.email)
-            }
+            it ?: return@Observer
+            firstnameField.setText(it.firstname)
+            lastnameField.setText(it.lastname)
+            phoneField.setText(it.phone)
+            emailField.setText(it.email)
+        })
+
+        viewModel.navEvent.observe(viewLifecycleOwner, Observer {
+            val bundle = bundleOf("personId" to personId)
+            NavHostFragment.findNavController(this@EditFragment)
+                .navigate(R.id.action_editFragment_to_contactFragment, bundle)
         })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.edit_menu, menu);
+        inflater.inflate(R.menu.edit_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
