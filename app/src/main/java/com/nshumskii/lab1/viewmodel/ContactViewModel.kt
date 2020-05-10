@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.nshumskii.lab1.R
-import com.nshumskii.lab1.data.BaseDB
+import com.nshumskii.lab1.data.AppDatabase
 import com.nshumskii.lab1.data.PersonData
-import com.nshumskii.lab1.interactor.PersonInteractor
+import com.nshumskii.lab1.data.PersonRepository
 import com.nshumskii.lab1.model.Event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -16,7 +16,8 @@ import kotlinx.coroutines.withContext
 
 class ContactViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var personInteractor = PersonInteractor(BaseDB.invoke().personDataDao())
+    private var personInteractor =
+        PersonRepository(AppDatabase.getInstance(application).personDataDao())
 
     var person: MutableLiveData<PersonData> = MutableLiveData()
 

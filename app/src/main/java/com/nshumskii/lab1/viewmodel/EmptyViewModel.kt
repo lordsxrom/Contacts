@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.nshumskii.lab1.data.BaseDB
-import com.nshumskii.lab1.interactor.PersonInteractor
+import com.nshumskii.lab1.data.AppDatabase
+import com.nshumskii.lab1.data.PersonRepository
 import com.nshumskii.lab1.model.Event
 import com.nshumskii.lab1.model.Person
 import kotlinx.coroutines.CoroutineScope
@@ -20,9 +20,8 @@ import java.io.IOException
 
 class EmptyViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var mContext = getApplication<Application>().applicationContext
-
-    private var personInteractor = PersonInteractor(BaseDB.invoke().personDataDao())
+    private var personInteractor =
+        PersonRepository(AppDatabase.getInstance(application).personDataDao())
 
     var fileEvent: MutableLiveData<Event<String>> = MutableLiveData()
 
@@ -37,7 +36,7 @@ class EmptyViewModel(application: Application) : AndroidViewModel(application) {
         if (Activity.RESULT_OK == resultCode) {
             data?.data?.let { uri ->
                 CoroutineScope(Dispatchers.IO).launch {
-                    val stream = mContext.contentResolver.openInputStream(uri)
+                    val stream = getApplication<Application>().contentResolver.openInputStream(uri)
                     stream?.let {
                         withContext(Main) { fileEvent.value = Event(ACTION_START_IMPORT_FILE) }
 
