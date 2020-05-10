@@ -62,8 +62,7 @@ class ListFragment : Fragment() {
 
         search = view.findViewById(R.id.et_search)
 
-        personsAdapter = PersonsAdapter(emptyList())
-        personsAdapter.callback = object : OnItemClickListener {
+        val callback = object : OnItemClickListener {
             override fun onClick(person: PersonData) {
                 val bundle = bundleOf("personId" to person.id)
                 findNavController(this@ListFragment).navigate(
@@ -95,6 +94,7 @@ class ListFragment : Fragment() {
                 }
             }
         }
+        personsAdapter = PersonsAdapter(emptyList(), callback)
 
         personsRecyclerView = view.findViewById(R.id.rv_persons)
         personsRecyclerView.adapter = personsAdapter

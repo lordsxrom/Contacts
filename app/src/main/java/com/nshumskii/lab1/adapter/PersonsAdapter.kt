@@ -2,7 +2,6 @@ package com.nshumskii.lab1.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -10,15 +9,8 @@ import com.nshumskii.lab1.R
 import com.nshumskii.lab1.data.PersonData
 import com.nshumskii.lab1.view.ListFragment
 
-class PersonsAdapter() :
+class PersonsAdapter(var data: List<PersonData>, var callback: ListFragment.OnItemClickListener) :
     RecyclerView.Adapter<PersonsAdapter.PersonViewHolder>() {
-
-    var data: List<PersonData> = emptyList()
-    var callback: ListFragment.OnItemClickListener? = null
-
-    constructor(data: List<PersonData>) : this() {
-        this.data = data
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,12 +22,12 @@ class PersonsAdapter() :
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val person: PersonData = data[position]
-        holder.bind(person)
+        holder.bind(person, callback)
     }
 
     override fun getItemCount() = data.size
 
-    inner class PersonViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
+    class PersonViewHolder(inflater: LayoutInflater, parent: ViewGroup) :
         RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item, parent, false)) {
 
         private var mItem: ViewGroup? = null
@@ -44,6 +36,7 @@ class PersonsAdapter() :
         private var mEmailView: TextView? = null
         private var mCallBtn: ImageButton? = null
         private var person: PersonData? = null
+        private var callback: ListFragment.OnItemClickListener? = null
 
         init {
             mItem = itemView.findViewById(R.id.cl_person_item)
@@ -64,8 +57,13 @@ class PersonsAdapter() :
             }
         }
 
-        fun bind(person: PersonData) {
+        fun bind(
+            person: PersonData,
+            callback: ListFragment.OnItemClickListener?
+        ) {
             this.person = person
+            this.callback = callback
+
             mNameView?.text = "${person.firstname} ${person.lastname}"
             mPhoneView?.text = person.phone
             mEmailView?.text = person.email
