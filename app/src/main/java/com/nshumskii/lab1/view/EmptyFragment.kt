@@ -1,21 +1,18 @@
 package com.nshumskii.lab1.view
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
-import com.nshumskii.lab1.MainActivity
-
 import com.nshumskii.lab1.R
+import com.nshumskii.lab1.viewmodel.EmptyViewModel
 import kotlinx.android.synthetic.main.empty_fragment.*
 
 class EmptyFragment : Fragment() {
@@ -24,33 +21,7 @@ class EmptyFragment : Fragment() {
 
     private lateinit var addButton: Button
 
-    private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                MainActivity.ACTION_START_IMPORT_FILE -> {
-                    // TODO show file size
-                    // val fileSize = intent.extras?.get("import_file_size") as Boolean
-                    group_import.visibility = View.GONE
-                    group_progress.visibility = View.VISIBLE
-                }
-                MainActivity.ACTION_FINISH_IMPORT_FILE -> {
-                    val fileImportResult = intent.extras?.get("import_success") as Boolean
-                    if (fileImportResult) {
-                        NavHostFragment.findNavController(this@EmptyFragment)
-                            .navigate(R.id.action_emptyFragment_to_listFragment)
-                    } else {
-                        group_import.visibility = View.VISIBLE
-                        group_progress.visibility = View.GONE
-                        Toast.makeText(
-                            context,
-                            getString(R.string.failed_import),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }
-    }
+    private lateinit var viewModel: EmptyViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +36,7 @@ class EmptyFragment : Fragment() {
                 action = Intent.ACTION_OPEN_DOCUMENT
                 type = "*/*"
             }
-            activity?.startActivityForResult(intent, MainActivity.REQUEST_TO_IMPORT_FILE)
+            startActivityForResult(intent, EmptyViewModel.REQUEST_TO_IMPORT_FILE)
         }
 
         addButton = view.findViewById(R.id.btn_add_new)
@@ -74,18 +45,40 @@ class EmptyFragment : Fragment() {
                 .navigate(R.id.action_emptyFragment_to_editFragment)
         }
 
-        val filter = IntentFilter().apply {
-            addAction(MainActivity.ACTION_START_IMPORT_FILE)
-            addAction(MainActivity.ACTION_FINISH_IMPORT_FILE)
-        }
-        context?.let { LocalBroadcastManager.getInstance(it).registerReceiver(receiver, filter) }
-
         return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        context?.let { LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver) }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(EmptyViewModel::class.java)
+
+        viewModel.fileEvent.observe(viewLifecycleOwner, Observer {
+            when (it?.getContentIfNotHandled()) {
+                EmptyViewModel.ACTION_START_IMPORT_FILE -> {
+                    group_import.visibility = View.GONE
+                    group_progress.visibility = View.VISIBLE
+                }
+                EmptyViewModel.ACTION_FINISH_IMPORT_FILE -> {
+                    NavHostFragment.findNavController(this@EmptyFragment)
+                        .navigate(R.id.action_emptyFragment_to_listFragment)
+                }
+                EmptyViewModel.ACTION_ERROR_IMPORT_FILE -> {
+                    group_import.visibility = View.VISIBLE
+                    group_progress.visibility = View.GONE
+                    Toast.makeText(
+                        context,
+                        getString(R.string.failed_import),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            EmptyViewModel.REQUEST_TO_IMPORT_FILE -> viewModel.fileToImport(resultCode, data)
+        }
     }
 
 }

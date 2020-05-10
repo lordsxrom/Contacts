@@ -4,23 +4,34 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.nshumskii.lab1.MainActivity
 import com.nshumskii.lab1.data.BaseDB
 import com.nshumskii.lab1.interactor.PersonInteractor
+import com.nshumskii.lab1.model.Event
 import com.nshumskii.lab1.model.Person
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class EmptyViewModel(application: Application) : AndroidViewModel(application) {
 
     private var mContext = getApplication<Application>().applicationContext
 
     private var personInteractor = PersonInteractor(BaseDB.invoke().personDataDao())
+
+    var fileEvent: MutableLiveData<Event<String>> = MutableLiveData()
+
+    companion object {
+        const val REQUEST_TO_IMPORT_FILE = 10
+        const val ACTION_FINISH_IMPORT_FILE = "finish_import_file"
+        const val ACTION_START_IMPORT_FILE = "start_import_file"
+        const val ACTION_ERROR_IMPORT_FILE = "error_import_file"
+    }
 
     fun fileToImport(resultCode: Int, data: Intent?) {
         if (Activity.RESULT_OK == resultCode) {
@@ -28,20 +39,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 CoroutineScope(Dispatchers.IO).launch {
                     val stream = mContext.contentResolver.openInputStream(uri)
                     stream?.let {
+                        withContext(Main) { fileEvent.value = Event(ACTION_START_IMPORT_FILE) }
+
                         val fileContent: String
                         try {
                             val size = it.available()
-                            val intent = Intent(MainActivity.ACTION_START_IMPORT_FILE)
-                            intent.putExtra("import_file_size", size)
-                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
                             val buffer = ByteArray(size)
                             it.read(buffer)
                             it.close()
                             fileContent = String(buffer)
                         } catch (e: IOException) {
-                            val intent = Intent(MainActivity.ACTION_FINISH_IMPORT_FILE)
-                            intent.putExtra("import_success", false)
-                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
+                            withContext(Main) { fileEvent.value = Event(ACTION_ERROR_IMPORT_FILE) }
                             return@launch
                         }
 
@@ -51,12 +59,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         )
 
                         personInteractor.insertAll(persons = persons)
-
-                        val intent = Intent().apply {
-                            action = MainActivity.ACTION_FINISH_IMPORT_FILE
-                            putExtra("import_success", true)
-                        }
-                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent)
+                        withContext(Main) { fileEvent.value = Event(ACTION_FINISH_IMPORT_FILE) }
                     }
                 }
             }
