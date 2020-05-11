@@ -117,7 +117,7 @@ class ListFragment : Fragment() {
 
         viewModel.persons.observe(viewLifecycleOwner, Observer<List<PersonData>> {
             group_list.visibility = View.VISIBLE
-            pb_progress_bar.visibility = View.GONE
+            group_progress.visibility = View.GONE
 
             personsAdapter.data = it
             personsAdapter.notifyDataSetChanged() // TODO improve notify
@@ -129,10 +129,6 @@ class ListFragment : Fragment() {
             }
         })
 
-        // TODO swipeRefresh
-//        swipeRefresh.setOnRefreshListener {
-//
-//        }
     }
 
     override fun onResume() {
