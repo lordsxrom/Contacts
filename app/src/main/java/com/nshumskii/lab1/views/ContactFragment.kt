@@ -6,9 +6,11 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
+import com.nshumskii.lab1.MainActivity
 
 import com.nshumskii.lab1.R
 import com.nshumskii.lab1.viewmodels.ContactViewModel
@@ -27,13 +29,31 @@ class ContactFragment : Fragment() {
 
     private lateinit var emailView: TextView
 
+    private var personId: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true)
         val view: View = inflater.inflate(R.layout.contact_fragment, container, false)
+
+        (activity as? MainActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        setHasOptionsMenu(true)
+
+        personId = arguments?.get("personId") as? Long
+        if (personId == null || personId == -1L) {
+            NavHostFragment.findNavController(this@ContactFragment)
+                .navigate(R.id.action_contactFragment_to_listFragment)
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    NavHostFragment.findNavController(this@ContactFragment)
+                        .navigate(R.id.action_contactFragment_to_listFragment)
+                }
+            })
 
         fullnameView = view.findViewById(R.id.tv_contact_fullname)
         firstnameView = view.findViewById(R.id.tv_contact_firstname)
@@ -48,7 +68,6 @@ class ContactFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ContactViewModel::class.java)
 
-        val personId: Long? = arguments?.get("personId") as? Long
         personId?.let { viewModel.fetchPerson(it) }
 
         viewModel.person.observe(viewLifecycleOwner, Observer {
@@ -63,7 +82,6 @@ class ContactFragment : Fragment() {
         viewModel.navEvent.observe(viewLifecycleOwner, Observer {
             when (it.getContentIfNotHandled()) {
                 R.id.action_contactFragment_to_listFragment -> {
-                    Toast.makeText(context, getString(R.string.contact_removed), Toast.LENGTH_SHORT).show()
                     NavHostFragment.findNavController(this@ContactFragment)
                         .navigate(R.id.action_contactFragment_to_listFragment)
                 }
@@ -78,24 +96,37 @@ class ContactFragment : Fragment() {
             }
         })
 
+        viewModel.msgEvent.observe(viewLifecycleOwner, Observer {
+            val msg = it?.getContentIfNotHandled()
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.contact_menu, menu);
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_delete -> {
-                viewModel.delete()
-                return true
-            }
-            R.id.action_update -> {
-                viewModel.update()
-                return true
-            }
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_delete -> {
+            viewModel.delete()
+            true
         }
-        return super.onOptionsItemSelected(item)
+        R.id.action_update -> {
+            viewModel.update()
+            true
+        }
+        android.R.id.home -> {
+            viewModel.home()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
+
+//    override fun onDestroyView() {
+//        (activity as? MainActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+//        setHasOptionsMenu(false)
+//        super.onDestroyView()
+//    }
 
 }

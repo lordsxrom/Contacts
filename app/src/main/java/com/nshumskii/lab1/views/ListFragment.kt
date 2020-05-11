@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nshumskii.lab1.MainActivity
 import com.nshumskii.lab1.R
 import com.nshumskii.lab1.adapters.PersonsAdapter
 import com.nshumskii.lab1.data.PersonData
@@ -56,8 +57,10 @@ class ListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.list_fragment, container, false)
+
+        (activity as? MainActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        setHasOptionsMenu(true)
 
         search = view.findViewById(R.id.et_search)
 

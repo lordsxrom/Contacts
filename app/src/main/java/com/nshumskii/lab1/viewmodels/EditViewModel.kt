@@ -24,9 +24,11 @@ class EditViewModel(application: Application) : AndroidViewModel(application) {
 
     var navEvent: MutableLiveData<Event<Int>> = MutableLiveData()
 
+    var msgEvent: MutableLiveData<Event<String>> = MutableLiveData()
+
     private var selectedPerson: PersonData? = null
 
-    fun getPersonById(id: Long) {
+    fun fetchPerson(id: Long) {
         CoroutineScope(IO).launch {
             selectedPerson = personRepository.getPersonById(id)
             withContext(Main) {
@@ -44,6 +46,10 @@ class EditViewModel(application: Application) : AndroidViewModel(application) {
         CoroutineScope(IO).launch {
             if (person.value == null) {
                 personRepository.insert(Person(firstname, lastname, phone, email))
+                withContext(Main) {
+                    msgEvent.value =
+                        Event(getApplication<Application>().getString(R.string.contact_made))
+                }
             } else {
                 selectedPerson?.let {
                     it.firstname = firstname
@@ -51,6 +57,10 @@ class EditViewModel(application: Application) : AndroidViewModel(application) {
                     it.phone = phone
                     it.email = email
                     personRepository.update(it)
+                    withContext(Main) {
+                        msgEvent.value =
+                            Event(getApplication<Application>().getString(R.string.contact_updated))
+                    }
                 }
             }
             withContext(Main) {

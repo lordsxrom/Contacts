@@ -27,4 +27,7 @@ interface PersonDataDao {
     @Delete
     suspend fun delete(person: PersonData)
 
+    @Query("SELECT * FROM persons_table ORDER BY id DESC LIMIT 1")
+    suspend fun selectLast(): PersonData?
+
 }

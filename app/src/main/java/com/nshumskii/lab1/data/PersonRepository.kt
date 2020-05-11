@@ -13,17 +13,13 @@ class PersonRepository(private val personDataDao: PersonDataDao) {
 
     suspend fun deleteAll() = personDataDao.deleteAll()
 
-    suspend fun insert(person: Person) {
-        personDataDao.insert(PersonData(person))
-    }
+    suspend fun insert(person: Person) = personDataDao.insert(PersonData(person))
 
-    suspend fun update(person: PersonData) {
-        personDataDao.update(person)
-    }
+    suspend fun update(person: PersonData) = personDataDao.update(person)
 
-    suspend fun delete(person: PersonData) {
-        personDataDao.delete(person)
-    }
+    suspend fun delete(person: PersonData) = personDataDao.delete(person)
+
+    suspend fun selectLast() = personDataDao.selectLast()
 
     companion object {
 
